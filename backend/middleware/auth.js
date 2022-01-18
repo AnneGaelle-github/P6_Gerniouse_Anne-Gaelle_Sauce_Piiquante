@@ -8,12 +8,16 @@ module.exports = (req, res, next) => {
     const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); // 'verify' décode le token
     const userId = decodedToken.userId;
     req.auth = { userId };
+    console.log(req.auth);
     if (req.body.userId && req.body.userId !== userId) {
+      console.error('user non valide');
       throw 'User ID non valide !';
     } else {
+      console.log('user valide');
       next();
     }
-  } catch {
+  } catch (err) {
+    console.error(err);
     res.status(401).json({
       error: new Error('Requête non authentifiée !')
     });
