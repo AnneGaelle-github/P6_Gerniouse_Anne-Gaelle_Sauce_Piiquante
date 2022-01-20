@@ -2,10 +2,10 @@
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
 const User = require('../models/user');
 
-// Création d'un nouvel utilisateur
+
+// Création d'un nouvel utilisateur avec cryptage du mot de passe
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10) // Le mot de passe sera 'haser' 10 fois par la fonction de hashage 'bcrypt'
@@ -27,9 +27,9 @@ exports.signup = (req, res, next) => {
       });
   };
 
-// Connection d'un utilisateur
+// Connection d'un utilisateur avec un token
 
-exports.login = (req, res, next) => {
+exports.login = (req, res) => {
     User.findOne({ email: req.body.email }) // Trouve l'utilisateur grace à son email
       .then(user => {
         if (!user) {
@@ -44,7 +44,7 @@ exports.login = (req, res, next) => {
               userId: user._id,
               token: jwt.sign( // La fonction 'sign' de 'jsonwebtoken' sert à encoder un nouveau TOKEN
                 { userId: user._id },
-                'RANDOM_TOKEN_SECRET',
+                '${process.env.TOKEN}',
                 { expiresIn: '24h' } // La durée de validité du token est de 24 heures. L'utilisateur devra se reconnecter au bout de 24 heures
               )
             });
