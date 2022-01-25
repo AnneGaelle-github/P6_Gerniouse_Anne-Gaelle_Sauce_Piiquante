@@ -4,7 +4,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
+const mongoSanitize = require('express-mongo-sanitize');
 
+const app = express();
+// pour éviter les injections mongodb
+app.use(mongoSanitize());
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
@@ -18,10 +22,7 @@ mongoose.connect('mongodb+srv://tmp:tmp@cluster0.mm3fb.mongodb.net/test?retryWri
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.error('Connexion à MongoDB échouée !'));
 
-
-const app = express();
-
-// Les CORS qui gère les requettes HTTP
+// Les CORS qui gère les requetes HTTP
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:8081');
