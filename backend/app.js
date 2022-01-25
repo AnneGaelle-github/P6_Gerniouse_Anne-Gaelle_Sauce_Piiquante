@@ -6,11 +6,17 @@ const mongoose = require('mongoose');
 const path = require('path');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require("helmet");
+require('dotenv').config();
+
 
 const app = express();
-// pour éviter les injections mongodb
-app.use(mongoSanitize());
-app.use(helmet());
+
+// Sécurisation de l'applications Express
+
+app.use(mongoSanitize()); // Pour éviter les injections mongodb
+app.use(helmet.xssFilter()); // Prévenention des attaques XSS
+
+ // Routes
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
@@ -18,7 +24,7 @@ const userRoutes = require('./routes/user');
 
 // Connexion à la base de données MongoDB Atlas
 
-mongoose.connect('mongodb+srv://tmp:tmp@cluster0.mm3fb.mongodb.net/test?retryWrites=true&w=majority', 
+mongoose.connect('mongodb+srv://'+process.env.ID_DB+':'+process.env.PASS_DB+'@cluster0.mm3fb.mongodb.net/test?retryWrites=true&w=majority', 
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
