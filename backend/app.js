@@ -5,10 +5,12 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require("helmet");
 
 const app = express();
 // pour éviter les injections mongodb
 app.use(mongoSanitize());
+app.use(helmet());
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
